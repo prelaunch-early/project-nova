@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ETHER — A voice, a presence.</title>
+<style>
+
+:root{--bg:#08090b;--fg:#f0f0f3;--muted:#85868e;--line:#ffffff18;--panel:#121318;--accent:#c3b8ff;--glow:#a9a1db;--speed:14s}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:'DM Sans','Noto Sans SC',sans-serif;overflow:hidden}button,input,textarea,select{font:inherit}button{cursor:pointer;color:inherit}button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}button{border:0;background:none}#scene{position:fixed;inset:0;background:var(--bg);isolation:isolate;transition:background 1s}#background{position:absolute;inset:0;background-position:center;background-size:cover;z-index:-3}#shade{position:absolute;inset:0;background:#0005;z-index:-2;display:none}.aurora{position:absolute;width:90vw;height:75vh;left:5vw;top:22vh;z-index:-1;opacity:.2;filter:blur(90px);background:radial-gradient(ellipse,var(--glow),transparent 62%);animation:drift var(--speed) ease-in-out infinite alternate;pointer-events:none}.grain{position:absolute;inset:0;opacity:.035;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.6' filter='url(%23n)'/%3E%3C/svg%3E")}main{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 8vw 155px}.presence{width:100%;max-width:1100px}#lyric{font-size:clamp(29px,4.1vw,66px);font-weight:400;letter-spacing:-.035em;line-height:1.5;min-height:1.5em;white-space:pre-wrap;overflow-wrap:anywhere;transition:filter .35s,opacity .35s,transform .35s}#lyric.enter{animation:arrive .7s both}footer{position:absolute;bottom:33px;left:48px;right:48px;display:flex;justify-content:space-between;align-items:end}.transport{position:absolute;bottom:37px;left:50%;transform:translateX(-50%);width:min(440px,55vw)}.controls{display:flex;justify-content:center;align-items:center;gap:23px}.icon{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);border-radius:50%;transition:background .2s,color .2s}.icon:hover{background:var(--line);color:var(--fg)}svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.play{width:44px;height:44px;border:1px solid var(--line);color:var(--fg)}.timeline{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:10px;font-variant-numeric:tabular-nums;color:var(--muted)}input[type=range]{accent-color:var(--accent);height:3px;cursor:pointer;min-width:0}.timeline input{flex:1;width:100%}.utilities{display:flex;gap:12px}footer,.transport{transition:opacity .5s}.idle footer,.idle .transport{opacity:0}.idle footer:has(:focus-visible),.idle .transport:has(:focus-visible){opacity:1}.idle #scene{cursor:none}.scrim{position:fixed;inset:0;background:#0008;backdrop-filter:blur(7px);z-index:5;opacity:0;visibility:hidden;transition:.3s}.scrim.open{opacity:1;visibility:visible}aside{position:fixed;right:0;top:0;bottom:0;width:min(460px,100vw);background:var(--panel);border-left:1px solid var(--line);z-index:6;padding:30px;transform:translateX(100%);transition:transform .35s;overflow-y:auto;color:var(--fg)}aside.open{transform:translateX(0)}.panelhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}h2{margin:0;font-size:20px;font-weight:500}.sub{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.7}.section{border-top:1px solid var(--line);padding-top:22px;margin-top:23px}.label{font-size:10px;letter-spacing:.18em;color:var(--muted);margin-bottom:14px}.field{display:block;font-size:12px;color:var(--muted);margin:16px 0 8px}.upload{display:block;border:1px dashed #ffffff28;border-radius:12px;padding:18px;text-align:center;cursor:pointer;font-size:13px;background:#ffffff03;line-height:1.8}.upload small{color:var(--muted);display:block;font-size:10px}.upload:hover{border-color:var(--accent)}input[type=file]{width:100%;font-size:11px;color:var(--muted);margin-top:10px}textarea,input[type=number],input[type=text],select{width:100%;border:1px solid var(--line);border-radius:8px;background:#ffffff05;color:var(--fg);padding:11px;outline:none}textarea{height:155px;resize:vertical;font-size:12px;line-height:1.8}textarea:focus{border-color:#c3b8ff70}select option{background:var(--panel)}.row{display:flex;align-items:center;gap:10px}.row>*{flex:1}.btn{border:1px solid var(--line);border-radius:8px;padding:11px 14px;font-size:12px;background:#ffffff05}.btn:hover{background:#ffffff10}.primary{background:#d4cced;color:#16131f;border-color:transparent}.primary:hover{background:#e6dff9}.themes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}.theme{border:1px solid var(--line);border-radius:10px;padding:7px;font-size:10px;color:var(--muted)}.theme.active{border-color:var(--accent);color:var(--fg)}.swatch{height:45px;border-radius:5px;margin-bottom:8px}.hint{font-size:11px;color:var(--muted);line-height:1.8;margin-top:10px}.notice{color:var(--accent);font-size:12px;line-height:1.7;min-height:20px;margin-top:10px}.check{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:15px}.check input{accent-color:var(--accent)}#toast{position:fixed;bottom:170px;left:50%;transform:translate(-50%,12px);opacity:0;pointer-events:none;z-index:10;background:#24232deb;border:1px solid #ffffff20;border-radius:20px;padding:10px 20px;font-size:12px;color:#eee;transition:.3s;max-width:85vw;text-align:center}#toast.show{opacity:1;transform:translate(-50%,0)}.light{--bg:#f0efed;--fg:#25252b;--muted:#7e7d85;--line:#00000015;--panel:#f6f5f3;--accent:#6e5c9c;--glow:#c1b5df}.light .theme,.light textarea,.light select,.light input[type=number],.light .btn{border-color:#0002}.light .upload{border-color:#0003}.light .primary{background:#514466;color:#fff}.light .aurora{opacity:.5}.still .aurora{animation:none}@keyframes drift{0%{transform:translate(-12%,-8%) scale(.9)}100%{transform:translate(12%,8%) scale(1.2)}}@keyframes arrive{from{opacity:0;filter:blur(9px);transform:translateY(12px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}@media(max-width:760px){main{padding:100px 24px 185px}footer{bottom:22px;left:20px;right:20px}.utilities{margin-left:auto}.transport{bottom:80px;width:80vw}aside{padding:24px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+.asr-box{margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(130deg,#c3b8ff0d,transparent)}.asr-title{font-size:13px;margin-bottom:7px}.asr-box select{margin:9px 0 12px;font-size:12px}.asr-box progress{width:100%;height:4px;accent-color:var(--accent);margin-top:13px}.asr-box progress[hidden]{display:none}.asr-status{font-size:11px;line-height:1.8;color:var(--accent);margin-top:9px;overflow-wrap:anywhere}.asr-status.error{color:#e99898}button:disabled,input:disabled,textarea:disabled,select:disabled{opacity:.45;cursor:not-allowed}.asr-box a{color:inherit;text-underline-offset:3px}
+
+.voice-particles{width:clamp(240px,28vw,340px);height:clamp(240px,28vw,340px);margin:0 auto 28px;color:var(--fg)}
+.voice-particles canvas{display:block;width:100%;height:100%;background:transparent}
+
+main{padding:80px 8vw 130px}.presence{max-width:960px}#lyric{font-weight:400;letter-spacing:-.025em}
+.aurora{opacity:.09}.grain{opacity:.02}.light .aurora{opacity:.2}
+footer{justify-content:flex-end}.utilities{margin-left:auto}
+.transport{width:min(360px,55vw)}.controls{gap:18px}.timeline{opacity:.6}
+@media(max-width:760px){main{padding:60px 26px 150px}.voice-particles{width:240px;height:240px;margin-bottom:24px}.transport{width:75vw}}
+
+#lyric{color:var(--lyric-color,var(--fg))}.voice-particles{color:var(--ring-color,var(--fg))}
+.custom-background .aurora,.custom-background .grain{opacity:0}
+.custom-background #lyric{text-shadow:0 1px 16px var(--contrast-shadow,transparent)}
+
+#shade{pointer-events:none;transition:opacity .18s}
+#overlayValue{float:right;font-variant-numeric:tabular-nums}
+.readable-background #lyric{font-weight:500;text-shadow:0 2px 5px #000b,0 0 24px #0009}
+
+.immersive footer,.immersive .transport,.immersive #toast{opacity:0!important;visibility:hidden!important;pointer-events:none!important}.immersive #scene{cursor:none}.timeline{opacity:.9}.timeline input[type=range]{height:30px;touch-action:none;padding:0;background:transparent;-webkit-appearance:none;appearance:none;outline-offset:4px}.timeline input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:var(--line);border:1px solid color-mix(in srgb,var(--fg) 25%,transparent)}.timeline input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--fg);margin-top:-7px;box-shadow:0 0 0 5px color-mix(in srgb,var(--fg) 10%,transparent)}.timeline input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--line)}.timeline input[type=range]::-moz-range-thumb{width:16px;height:16px;border:0;border-radius:50%;background:var(--fg)}.timeline input[type=range]:focus-visible{outline:2px solid var(--accent)}#assetLoadStatus{white-space:pre-line}.idle:has(#seek:active) footer,.idle:has(#seek:active) .transport{opacity:1}
+</style>
+</head>
+<body>
+<div id="scene">
+<div id="background"></div><div id="shade"></div><div class="aurora"></div><div class="grain"></div>
+
+<main><div class="presence"><div class="voice-particles" aria-hidden="true"><canvas id="particles"></canvas></div><div id="lyric" aria-live="off">此刻，只有你和我的声音。</div></div></main>
+<div class="transport"><div class="controls"><button class="icon" id="restart" aria-label="重新开始" title="重新开始"><svg viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></svg></button><button class="icon" id="prev" aria-label="上一句" title="上一句 ←"><svg viewBox="0 0 24 24"><path d="M7 5v14M19 5l-10 7 10 7z"/></svg></button><button class="icon play" id="play" aria-label="播放" title="播放 / 暂停（空格）"></button><button class="icon" id="nextBtn" aria-label="下一句" title="下一句 →"><svg viewBox="0 0 24 24"><path d="M17 5v14M5 5l10 7-10 7z"/></svg></button><button class="icon" id="mute" aria-label="静音" title="静音"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4zM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></svg></button></div><div class="timeline"><span id="elapsed">0:00</span><input type="range" id="seek" min="0" max="30" value="0" step="0.01" aria-label="播放进度"><span id="duration">0:30</span></div></div>
+<footer><div class="utilities"><button class="icon" id="immersiveButton" aria-label="隐藏全部操作界面" aria-keyshortcuts="H" title="隐藏界面（H）；点画面或 Esc 恢复"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.7 5.3a12 12 0 0 1 11.3 6.7 15 15 0 0 1-3 3.7M6.2 6.2A16 16 0 0 0 3 12s3 7 9 7a12 12 0 0 0 4.2-.8"/></svg></button><button class="icon" id="fullscreen" aria-label="切换全屏" title="全屏"><svg viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M8 21H3v-5"/></svg></button><button class="icon" id="settings" aria-label="打开设置" title="设置"><svg viewBox="0 0 24 24"><path d="m9 3-.6 2.3-2 .9L4.3 6 2.8 8.6l1.6 1.8v2.3l-1.6 1.8L4.3 17l2.1-.2 2 .9L9 20h3l.6-2.3 2-.9 2.1.2 1.5-2.5-1.6-1.8v-2.3l1.6-1.8L16.7 6l-2.1.2-2-.9L12 3z" transform="translate(1 0)"/><circle cx="11.5" cy="11.5" r="3"/></svg></button></div></footer>
+</div>
+<div class="scrim" id="scrim"></div>
+<aside id="panel" role="dialog" aria-modal="true" aria-label="播放器设置" aria-hidden="true" inert>
+<div class="panelhead"><h2>让声音有你的样子</h2><button class="icon" id="close" aria-label="关闭设置">✕</button></div><div class="sub">YOUR SPACE, YOUR VOICE<br>导入一段音乐，给它一些想说的话。</div>
+<div class="section"><div class="label">自动加载素材</div><div id="assetLoadStatus" class="hint" role="status">正在检查 assets 文件夹…</div><div class="hint">默认读取 assets/audio.mp3、assets/subtitles.srt、assets/background.jpg。播放需点一下播放按钮。缺少素材仍可手动上传。隐藏界面：点击右下角划线眼睛，点画面或按 Esc 恢复。</div></div><div class="section"><div class="label">01 / SOUND · 音乐</div><div id="trackName" class="hint" style="margin-bottom:12px">尚未选择音频</div><label class="upload">选择你的声音<input type="file" id="audioFile" accept="audio/*"><small>MP3 / WAV / M4A 等浏览器支持的音频</small></label><div class="asr-box"><div class="asr-title">✧ 把声音，变成台词</div><div class="hint">从刚才选择的音频识别中文，自动生成时间轴。</div><label class="field" for="asrModel">识别模型</label><select id="asrModel"><option value="Xenova/whisper-small">高精度 · Whisper Small（默认，下载更大、识别更慢）</option><option value="Xenova/whisper-base">均衡 · Whisper Base</option><option value="Xenova/whisper-tiny">轻量 · Whisper Tiny（较快）</option></select><label class="field" for="glossary">称呼 / 专有词（逗号分隔）</label><input type="text" id="glossary" value="Boss" placeholder="例如：Boss, Alice"><div class="hint">合并 B oss 等拆写；句首称呼单独显示。不会自动纠正发音相近的错字。</div><label class="field" for="lineMode">自动分句</label><select id="lineMode"><option value="natural">自然短句（语气与转折优先）</option><option value="pause">只按停顿</option></select><label class="field" for="referenceText">指定分行台词（可选，每行一句）</label><textarea id="referenceText" style="height:130px" placeholder="Boss&#10;如果我們真的只剩下最後五分鐘&#10;我突然不知道該從哪一句話開始說起&#10;明明"></textarea><input type="file" id="referenceFile" accept=".txt" aria-label="导入指定分行台词"><div class="hint">填入后严格按你的分行显示，并匹配识别时间轴；不会把「明明」粘到上一句。请使用完整台词，文字需与识别内容基本一致。词内切分时间仍为估计。</div><label class="field" for="pauseThreshold">按停顿分句（秒）</label><input type="number" id="pauseThreshold" min="0.15" max="1" step="0.05" value="0.25"><div class="hint">数值越小，短句越多。结合音频停顿、标点和逐词时间轴分句。</div><button class="btn" id="regroup" disabled style="width:100%;margin:12px 0">重新分句（无需重新识别）</button><div class="row"><button class="btn primary" id="transcribe" disabled>识别中文台词</button><button class="btn" id="cancelAsr" hidden>取消</button></div><progress id="asrProgress" hidden aria-label="语音模型下载进度"></progress><div id="asrStatus" class="asr-status" role="status" aria-live="polite">先选择音频，再点击识别。</div><div class="hint">首次联网下载识别库和模型；完成后在本机运行，不上传音频，无需 API Key。建议使用桌面 Chrome / Edge。歌曲、方言与混合语言可能需要校对。</div><details class="hint"><summary>识别结果与隐私说明</summary>结果将填入下方编辑框并应用，替换当前台词。已有内容请先导出保存。模型可能输出简体或繁体；时间轴为模型估计，可手动校正。联网请求仅用于从 jsDelivr 与 Hugging Face 加载程序、模型。<a href="https://huggingface.co/docs/transformers.js/v3.8.1/en/api/pipelines" target="_blank" rel="noopener noreferrer">识别引擎说明</a></details></div><div class="field">音量</div><input id="volume" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="音量" style="width:100%"></div>
+<div class="section"><div class="label">02 / WORDS · 字幕与台词</div><input type="file" id="textFile" accept=".lrc,.srt,.vtt,.txt" aria-label="导入字幕文件"><label class="field" for="editor">或直接输入，每行一句</label><textarea id="editor" spellcheck="false" placeholder="[00:00.00] 此刻，只有你和我的声音。&#10;[00:05.00] 放慢一点，让声音带你走。"></textarea><div class="hint">支持 LRC、SRT、VTT 时间轴。普通文字按下方间隔轮播；也可先使用上方「识别中文台词」。</div><div class="row"><label class="field">每句时长（秒）<input type="number" id="interval" min="0.5" max="120" step="0.5" value="5"></label><label class="field">字幕偏移（秒）<input type="number" id="offset" min="-600" max="600" step="0.1" value="0"></label></div><div class="hint">正偏移让字幕晚出现，负偏移让字幕提前。</div><button class="btn primary" id="apply" style="width:100%;margin-top:12px">应用台词</button><div class="row" style="margin-top:9px"><button class="btn" id="stamp">此刻标记下一句</button><button class="btn" id="export">导出 LRC</button></div><div class="hint">打点方式：应用普通文字 → 播放音乐 → 每到一句开头点击「此刻标记下一句」。</div><div class="notice" id="notice" role="status"></div></div>
+<div class="section"><div class="label">03 / ATMOSPHERE · 氛围</div><div class="themes"><button class="theme active" data-theme="dark"><div class="swatch" style="background:radial-gradient(ellipse at bottom,#393344,#08090b)"></div>Obsidian · 黑</button><button class="theme" data-theme="light"><div class="swatch" style="background:radial-gradient(ellipse at bottom,#d1c8df,#f4f2ee)"></div>Porcelain · 白</button><button class="theme" data-theme="midnight"><div class="swatch" style="background:radial-gradient(ellipse at bottom,#22445b,#080e18)"></div>Deep blue · 蓝</button></div><label class="field">自定义背景图片<input type="file" id="bgFile" accept="image/*"></label><button class="btn" id="clearBg">移除背景图片</button><label class="field" for="overlayStrength">背景黑色遮罩 <output id="overlayValue">55%</output></label><input id="overlayStrength" type="range" min="0" max="85" step="1" value="55" style="width:100%"><div class="hint">建议 45–65%。遮罩开启时使用白字与白色粒子；调到 0% 则恢复自动明暗配色。</div><label class="field" for="fontSize">文字大小</label><input id="fontSize" type="range" min="24" max="90" value="56" aria-label="文字大小" style="width:100%"><label class="field" for="ringGain">粒子反应强度</label><input id="ringGain" type="range" min="0.5" max="3" step="0.1" value="2.2" style="width:100%"><div class="hint" id="contrastInfo">自定义背景会自动适配台词和粒子的明暗。</div><label class="check"><input type="checkbox" id="motion" checked>动态背景与声音粒子</label><label class="check"><input type="checkbox" id="hideUI" checked>自动隐藏操作按钮</label></div>
+<div class="section"><div class="hint">文件只在你的浏览器本地使用。文字和偏好会保存在此浏览器；刷新后需重新选择音乐与背景图片。粒子随导入音频变化；自动识别在本机运行；本页面不生成 AI 语音或对话。</div><button class="btn" id="demo" style="margin-top:12px">恢复演示台词</button></div>
+</aside><div id="toast" role="status"></div><audio id="audio" preload="metadata"></audio>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const demo=['此刻，只有你和我的声音。','放慢一点，让声音带你走。','不必急着找到所有答案。','你可以只是，安静地在这里。','我会陪你，走过这一段。','现在，听见你自己。'];
+let lastTranscript=null;
+let selectedAudio=null,asrWorker=null,asrWorkerURL='',asrBusy=false,asrRun=0,asrTimer=null;
+let cues=[],playing=false,position=0,lastTick=0,active=-2,audioURL='',bgURL='',ctx,analyser,source,bins,stampIndex=0,stamps=[],idleTimer,toastTimer,lastFocus;
+const particleCanvas=$('particles'),particleContext=particleCanvas.getContext('2d');
+const particleBands=new Float32Array(64),particleCloud=[];
+let particlePhase=0,lastParticleDraw=0,particleColor='#f7f7f9',lastParticleColor=0,particleSize=0,particleDpr=1;
+let particleSeed=28431;
+function particleRandom(){particleSeed=(Math.imul(particleSeed,1664525)+1013904223)>>>0;return particleSeed/4294967296}
+const particleCount=innerWidth<700?3800:6400;
+for(let i=0;i<particleCount;i++){
+ const y=1-2*particleRandom();
+ particleCloud.push({y,angle:particleRandom()*Math.PI*2,radius:Math.sqrt(1-y*y),layer:.91+particleRandom()*.09,seed:particleRandom(),size:.45+particleRandom()*.65});
+}
+let backgroundImage=null,contrastFrame=null;
+const contrastCanvas=document.createElement('canvas'),contrastContext=contrastCanvas.getContext('2d',{willReadFrequently:true});
+let timeBins=null,particleEnergy=0;
+let compatibilityEngine=null,compatibilityModel='',compatibilityLibrary=null,compatibilityTail=Promise.resolve(),compatibilityTask=null;
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+const playIcon='<svg viewBox="0 0 24 24"><path d="m9 5 11 7-11 7z"/></svg>',pauseIcon='<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>';
+function toast(s){$('toast').textContent=s;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3200)}
+function seconds(s){const p=s.trim().replace(',','.').split(':').map(Number);return p.every(Number.isFinite)?p.reduce((a,v)=>a*60+v,0):NaN}
+function parse(text){text=text.replace(/^\uFEFF/,'').replace(/\r/g,'');let result=[];const blocks=text.trim().split(/\n\s*\n/);for(const block of blocks){const lines=block.split('\n');const at=lines.findIndex(l=>l.includes('-->'));if(at>=0){const m=lines[at].match(/([\d:.,]+)\s*-->\s*([\d:.,]+)/);if(m){const t=seconds(m[1]),end=seconds(m[2]);const words=lines.slice(at+1).join('\n').replace(/<[^>]*>/g,'').trim();if(Number.isFinite(t)&&Number.isFinite(end)&&end>t&&words)result.push({t,end,text:words})}}}if(result.length)return result.sort((a,b)=>a.t-b.t);
+let fileOffset=0;const om=text.match(/\[offset:([+-]?\d+)\]/i);if(om)fileOffset=Number(om[1])/1000;
+for(const line of text.split('\n')){const matches=[...line.matchAll(/\[(\d+:\d{2}(?:[.:]\d+)?)\]/g)];if(matches.length){const words=line.replace(/\[[^\]]*\]/g,'').trim();for(const m of matches){const t=seconds(m[1].replace(/:(\d{2})[.:](\d+)$/,':$1.$2'))+fileOffset;if(Number.isFinite(t))result.push({t:Math.max(0,t),text:words})}}}
+if(result.length)return result.sort((a,b)=>a.t-b.t);
+const interval=Math.min(120,Math.max(.5,Number($('interval').value)||5));return text.split('\n').map(s=>s.trim()).filter(s=>s&&!/^\[\w+:.*\]$/.test(s)&&s!=='WEBVTT').map((s,i)=>({t:i*interval,text:s}));}
+function total(){return audioURL&&Number.isFinite($('audio').duration)?$('audio').duration:Math.max(1,...cues.map(c=>c.end??c.t+(Number($('interval').value)||5)))}
+function fmt(t){t=Math.max(0,t||0);return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0')}
+function save(){try{localStorage.setItem('ether-v1',JSON.stringify({text:$('editor').value,lineMode:$('lineMode').value,referenceText:$('referenceText').value,asrModel:$('asrModel').value,glossary:$('glossary').value,pauseThreshold:$('pauseThreshold').value,interval:$('interval').value,offset:$('offset').value,theme:document.body.dataset.theme||'dark',font:$('fontSize').value,motion:$('motion').checked,hideUI:$('hideUI').checked,volume:$('volume').value,ringGain:$('ringGain').value,overlayStrength:$('overlayStrength').value}))}catch{}}
+function setPlaying(v){playing=v;$('play').innerHTML=v?pauseIcon:playIcon;$('play').setAttribute('aria-label',v?'暂停':'播放');$('scene').classList.toggle('playing',v);lastTick=performance.now();wake()}
+async function setupAudio(){if(!ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;ctx=new C();analyser=ctx.createAnalyser();analyser.fftSize=256;source=ctx.createMediaElementSource($('audio'));source.connect(analyser);analyser.connect(ctx.destination);bins=new Uint8Array(analyser.frequencyBinCount)}if(ctx.state==='suspended')await ctx.resume()}
+async function toggle(){if(playing){if(audioURL)$('audio').pause();setPlaying(false);return}if(position>=total()-.05)seek(0);if(audioURL){try{await setupAudio();await $('audio').play();setPlaying(true)}catch{setPlaying(false);toast('无法播放此音频，请选择浏览器支持的格式。')}}else setPlaying(true)}
+function seek(t){position=Math.min(total(),Math.max(0,t));if(audioURL)$('audio').currentTime=position;lastTick=performance.now();active=-2;render()}
+function render(){const t=position-(Number($('offset').value)||0);let idx=-1;for(let i=0;i<cues.length;i++){if(cues[i].t<=t)idx=i;else break}let display=idx;if(idx>=0&&cues[idx].end!==undefined&&t>=cues[idx].end)display=-1;if(display!==active){active=display;$('lyric').textContent=display>=0?cues[display].text:'…';$('lyric').classList.remove('enter');void $('lyric').offsetWidth;$('lyric').classList.add('enter');scheduleContrast()}$('elapsed').textContent=fmt(position);$('duration').textContent=fmt(total());if(Number($('seek').max)!==total())$('seek').max=total();if(!scrubbing)$('seek').value=position;$('seek').disabled=Boolean(audioURL&&(!Number.isFinite($('audio').duration)||$('audio').duration<=0))}
+function drawParticles(now){
+ if(!particleContext||now-lastParticleDraw<30)return;
+ const dt=Math.min(.1,(now-lastParticleDraw)/1000||.033);lastParticleDraw=now;
+ const motion=$('motion').checked&&!reduceMotion.matches;
+ const reactive=playing&&analyser&&audioURL&&motion;
+ let loudness=0;
+ if(reactive){
+  analyser.getByteFrequencyData(bins);
+  if(!timeBins||timeBins.length!==analyser.fftSize)timeBins=new Uint8Array(analyser.fftSize);
+  analyser.getByteTimeDomainData(timeBins);
+  for(const value of timeBins)loudness+=((value-128)/128)**2;
+  loudness=Math.min(1,Math.sqrt(loudness)*4);
+ }
+ particleEnergy+=(loudness-particleEnergy)*(1-Math.exp(-dt*(loudness>particleEnergy?17:5)));
+ for(let i=0;i<particleBands.length;i++){
+  const target=reactive?bins[Math.min(bins.length-1,i+2)]/255:0;
+  particleBands[i]+=(target-particleBands[i])*(1-Math.exp(-dt*10));
+ }
+ if(motion)particlePhase+=dt*(.11+particleEnergy*.16);
+ const size=particleCanvas.clientWidth||240,dpr=Math.min(devicePixelRatio||1,2);
+ if(size!==particleSize||dpr!==particleDpr){particleSize=size;particleDpr=dpr;particleCanvas.width=Math.round(size*dpr);particleCanvas.height=Math.round(size*dpr);particleContext.setTransform(dpr,0,0,dpr,0,0);}
+ if(now-lastParticleColor>300){particleColor=getComputedStyle(particleCanvas.parentElement).color;lastParticleColor=now;}
+ const context=particleContext,center=size/2,base=size*.33,gain=Math.max(.5,Math.min(3,Number($('ringGain').value)||2.2));
+ context.clearRect(0,0,size,size);context.fillStyle=particleColor;
+ const rotation=particlePhase,cos=Math.cos(rotation),sin=Math.sin(rotation),tilt=.12;
+ const batches=Array.from({length:12},()=>[]);
+ for(const point of particleCloud){
+  const latitude=point.y;
+  // Sparse equator and bright polar caps reproduce the open, granular shell in the reference.
+  if(Math.abs(latitude)<.13&&point.seed>.22)continue;
+  const band=particleBands[Math.min(63,Math.floor((latitude+1)*31.5))];
+  const twist=motion?Math.sin(latitude*4+particlePhase*.7)*.13:0;
+  const a=point.angle+twist,x=point.radius*Math.cos(a),z=point.radius*Math.sin(a);
+  const rx=x*cos+z*sin,rz=z*cos-x*sin,ry=latitude*Math.cos(tilt)-rz*Math.sin(tilt);
+  const depth=rz*Math.cos(tilt)+latitude*Math.sin(tilt);
+  const wave=Math.sin(point.angle*3+latitude*8+particlePhase*3);
+  const expansion=1+particleEnergy*gain*.045+band*particleEnergy*gain*.1*wave;
+  const turbulence=motion?particleEnergy*gain*.022:0;
+  const perspective=2.8/(2.8-depth*.35),radius=base*point.layer*expansion*perspective;
+  const px=center+rx*radius+Math.sin(point.seed*30+particlePhase*5)*base*turbulence;
+  const py=center+ry*radius+Math.cos(point.seed*27+particlePhase*4)*base*turbulence;
+  const cap=.25+.75*Math.pow(Math.abs(latitude),.7);
+  const opacity=Math.min(.95,((.25+.65*(depth+1)/2)*cap*(.65+point.seed*.45)+particleEnergy*.1)*1.65);
+  const dot=(point.size+.25*(depth+1)/2)*Math.max(.8,size/260);
+  batches[Math.min(11,Math.floor(opacity*12))].push(px,py,dot);
+ }
+ for(let bucket=0;bucket<batches.length;bucket++){
+  context.globalAlpha=(bucket+.6)/12;const dots=batches[bucket];
+  for(let i=0;i<dots.length;i+=3)context.fillRect(dots[i],dots[i+1],dots[i+2],dots[i+2]);
+ }
+ context.globalAlpha=1;
+}
+function tick(now){if(playing&&!scrubbing){if(audioURL)position=$('audio').currentTime;else position=Math.min(total(),position+(now-lastTick)/1000);if(position>=total()&&!audioURL)setPlaying(false)}lastTick=now;render();drawParticles(now);requestAnimationFrame(tick)}
+function apply(reset=true){const parsed=parse($('editor').value);if(!parsed.length){$('notice').textContent='请先输入至少一句台词。';return}if(playing){$('audio').pause();setPlaying(false)}cues=parsed;stampIndex=0;stamps=[];active=-2;if(reset)seek(0);save();$('notice').textContent='已应用 '+cues.length+' 句台词。';render()}
+function theme(name){document.body.dataset.theme=name;document.body.classList.toggle('light',name==='light');document.documentElement.style.setProperty('--bg',name==='midnight'?'#080e18':'');document.documentElement.style.setProperty('--glow',name==='midnight'?'#5499bb':'');document.querySelectorAll('.theme').forEach(b=>b.classList.toggle('active',b.dataset.theme===name));save()}
+function openPanel(){lastFocus=document.activeElement;$('panel').inert=false;$('panel').classList.add('open');$('scrim').classList.add('open');$('panel').setAttribute('aria-hidden','false');$('scene').inert=true;$('close').focus();wake()}
+function closePanel(){$('panel').classList.remove('open');$('scrim').classList.remove('open');$('panel').setAttribute('aria-hidden','true');$('panel').inert=true;$('scene').inert=false;lastFocus?.focus();wake()}
+function wake(){if(immersive)return;document.body.classList.remove('idle');clearTimeout(idleTimer);if($('hideUI').checked&&!scrubbing&&!$('panel').classList.contains('open'))idleTimer=setTimeout(()=>document.body.classList.add('idle'),2500)}
+$('settings').onclick=openPanel;$('close').onclick=closePanel;$('scrim').onclick=closePanel;$('play').onclick=toggle;$('restart').onclick=()=>seek(0);$('seek').oninput=e=>seek(Number(e.target.value));
+function move(dir){const t=position-(Number($('offset').value)||0);let i=-1;cues.forEach((c,n)=>{if(c.t<=t+.05)i=n});i=Math.max(0,Math.min(cues.length-1,i+dir));seek((cues[i]?.t||0)+(Number($('offset').value)||0))}
+$('prev').onclick=()=>move(-1);$('nextBtn').onclick=()=>move(1);$('apply').onclick=()=>apply();$('offset').onchange=()=>{active=-2;save();render()};
+$('audioFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;selectedAudio=file;lastTranscript=null;$('regroup').disabled=true;$('transcribe').disabled=false;setAsrStatus('已选择 '+file.name+' · 可以开始识别');$('audio').pause();setPlaying(false);if(audioURL)URL.revokeObjectURL(audioURL);audioURL=URL.createObjectURL(file);$('audio').src=audioURL;position=0;$('trackName').textContent=file.name;toast('音乐已载入，点击播放开始。')};
+$('audio').onloadedmetadata=()=>{position=0;render()};$('audio').onended=()=>setPlaying(false);$('audio').onpause=()=>{if(playing)setPlaying(false)};$('audio').onerror=()=>{setPlaying(false);toast('音频无法读取，请换一个文件。')};
+
+// Audio never leaves this device. Only runtime/model assets are downloaded.
+const ASR_WORKER_SOURCE = `
+let transcriber=null,loadedModel='';
+self.onmessage=async ({data})=>{
+ const {id,model,samples}=data;
+ const send=(type,details={})=>self.postMessage({id,type,...details});
+ try{
+  send('phase',{phase:'loading'});
+  const {pipeline,env}=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/dist/transformers.min.js');
+  env.allowLocalModels=false;
+  env.useBrowserCache=true;
+  env.backends.onnx.wasm.numThreads=1;
+  env.backends.onnx.wasm.proxy=false;
+  if(!transcriber||loadedModel!==model){
+   if(transcriber)await transcriber.dispose();
+   transcriber=null;loadedModel='';
+   transcriber=await pipeline('automatic-speech-recognition',model,{
+    device:'wasm',dtype:'q8',
+    progress_callback:p=>send('download',{progress:{status:p.status,file:p.file,loaded:p.loaded,total:p.total,progress:p.progress}})
+   });
+   const splitWords=transcriber.tokenizer.combineTokensIntoWords.bind(transcriber.tokenizer);
+   transcriber.tokenizer.combineTokensIntoWords=(tokens,_language,...rest)=>splitWords(tokens,'chinese',...rest);
+   loadedModel=model;
+  }
+  send('phase',{phase:'transcribing'});
+  const output=await transcriber(samples,{language:'chinese',task:'transcribe',return_timestamps:'word',chunk_length_s:30,stride_length_s:5,max_new_tokens:448});
+  send('complete',{output});
+ }catch(error){send('error',{message:error?.message||String(error)});}
+};`;
+function setAsrStatus(message,error=false){$('asrStatus').textContent=message;$('asrStatus').classList.toggle('error',error)}
+function asrLock(busy){
+ asrBusy=busy;
+ for(const id of ['audioFile','asrModel','glossary','pauseThreshold','lineMode','referenceText','referenceFile','textFile','editor','apply','interval','offset','stamp','demo'])$(id).disabled=busy;
+ $('regroup').disabled=busy||!lastTranscript;
+ $('transcribe').disabled=busy||(!selectedAudio&&!audioURL);
+ $('cancelAsr').hidden=!busy;
+ $('asrProgress').hidden=!busy;
+ $('transcribe').textContent=busy?'正在识别…':'识别中文台词';
+ if(!busy){clearInterval(asrTimer);asrTimer=null;$('asrProgress').removeAttribute('value');}
+}
+function destroyAsrWorker(){if(asrWorker)asrWorker.terminate();asrWorker=null;if(asrWorkerURL)URL.revokeObjectURL(asrWorkerURL);asrWorkerURL=''}
+function cancelRecognition(){if(!asrBusy)return;asrRun++;if(compatibilityTask){compatibilityTask.cancelled=true;compatibilityTask.stop?.interrupt()}destroyAsrWorker();asrLock(false);setAsrStatus('已取消。原有台词已保留，可重新开始。')}
+$('cancelAsr').onclick=cancelRecognition;
+async function decodeForRecognition(file,id){
+ const AudioDecoder=window.AudioContext||window.webkitAudioContext;
+ const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+ if(!AudioDecoder||!Offline)throw new Error('浏览器不支持音频解码，请使用新版桌面 Chrome / Edge。');
+ let decoder;
+ try{
+  decoder=new AudioDecoder();
+  const raw=await file.arrayBuffer();if(id!==asrRun)return null;
+  const decoded=await decoder.decodeAudioData(raw);if(id!==asrRun)return null;
+  const offline=new Offline(1,Math.ceil(decoded.duration*16000),16000);
+  const audioSource=offline.createBufferSource();audioSource.buffer=decoded;audioSource.connect(offline.destination);audioSource.start();
+  const rendered=await offline.startRendering();if(id!==asrRun)return null;
+  const samples=rendered.getChannelData(0).slice();
+  let peak=0;for(let i=0;i<samples.length;i++)peak=Math.max(peak,Math.abs(samples[i]));
+  if(peak<0.00001)throw new Error('这段音频没有可检测的声音，请换一个音频。');
+  return samples;
+ }finally{if(decoder)try{await decoder.close()}catch{}}
+}
+function normalizeTranscript(output,duration){
+ if(!Array.isArray(output?.chunks))throw new Error('未生成有效时间轴，请尝试切换模型后重试。');
+ const chunks=output.chunks;const result=[];
+ for(let i=0;i<chunks.length;i++){
+  const chunk=chunks[i],text=String(chunk.text||'').trim(),t=chunk.timestamp?.[0];
+  if(!text||typeof t!=='number'||!Number.isFinite(t)||t<0||t>=duration)continue;
+  let end=chunk.timestamp?.[1];
+  // Whisper may leave the final end timestamp open: close it at the audio end.
+  if(typeof end!=='number'||!Number.isFinite(end)){
+   const next=chunks.slice(i+1).find(c=>typeof c.timestamp?.[0]==='number'&&c.timestamp[0]>t);
+   end=next?next.timestamp[0]:duration;
+  }
+  end=Math.min(duration,end);if(end<=t)continue;
+  result.push({t,end,text,leadingSpace:/^\s/.test(String(chunk.text||''))});
+ }
+ result.sort((a,b)=>a.t-b.t);
+ if(!result.length)throw new Error('没有识别到带时间轴的人声。可试标准模型或更清晰的人声片段。');
+ return result;
+}
+function findAudioPauses(samples,sampleRate=16000){
+ const frame=Math.round(sampleRate*.02),levels=[];
+ for(let start=0;start<samples.length;start+=frame){let power=0,count=Math.min(frame,samples.length-start);for(let j=0;j<count;j++)power+=samples[start+j]**2;levels.push(Math.sqrt(power/count));}
+ const sorted=[...levels].sort((a,b)=>a-b),speech=sorted[Math.floor(sorted.length*.85)]||0;
+ if(speech<.0001)return [];
+ const threshold=Math.min(.02,Math.max(.001,speech*.12)),pauses=[];let from=null;
+ for(let i=0;i<=levels.length;i++){
+  const silent=i<levels.length&&levels[i]<threshold;
+  if(silent&&from===null)from=i;
+  if(!silent&&from!==null){if((i-from)*.02>=.14)pauses.push({t:from*.02,end:Math.min(samples.length/sampleRate,i*.02)});from=null;}
+ }
+ return pauses;
+}
+function vocabulary(){return $('glossary').value.split(/[,，、\n]/).map(x=>x.trim()).filter(Boolean).sort((a,b)=>b.length-a.length)}
+function repairVocabulary(words,terms){
+ const result=[];
+ for(let i=0;i<words.length;i++){
+  let match=null;
+  for(const term of terms){
+   const target=term.replace(/\s/g,'').toLowerCase();if(!target)continue;
+   let joined='';
+   for(let j=i;j<Math.min(words.length,i+12);j++){
+    if(j>i&&words[j].t-words[j-1].end>.45)break;
+    joined+=words[j].text.replace(/\s/g,'').replace(/[，,。.!！?？:：;；]+$/g,'').toLowerCase();
+    if(joined===target){match={...words[i],text:term+(words[j].text.match(/[，,。.!！?？:：;；]+$/)?.[0]||''),end:words[j].end,term:true,last:j};break;}
+    if(!target.startsWith(joined))break;
+   }
+   if(match)break;
+  }
+  if(match){const {last,...word}=match;result.push(word);i=last;}
+  else result.push({...words[i]});
+ }
+ return result;
+}
+function alignWordsToPauses(words,pauses){
+ return words.map(original=>{
+  const word={...original};
+  for(const pause of pauses){
+   if(pause.end-pause.t<.18)continue;
+   // DTW can assign a leading silence to the next token. Snap to measured voice onset.
+   if(word.t>=pause.t-.3&&word.t<pause.end&&word.end>pause.end+.03)word.t=pause.end;
+   if(word.end>pause.t&&word.end<=pause.end&&word.t<pause.t-.03)word.end=pause.t;
+  }
+  return word;
+ }).filter(word=>word.end>word.t);
+}
+function pauseTranscript(words,pauses=[],options={}){
+ const gap=Math.max(.15,Math.min(1,Number(options.gap??$('pauseThreshold').value)||.25));
+ const terms=options.terms??vocabulary(),items=repairVocabulary(alignWordsToPauses(words,pauses),terms),lines=[];let line=null;
+ const flush=()=>{if(line){lines.push(line);line=null}};
+ const pauseBoundaries=new Set();
+ for(const pause of pauses){
+  if(pause.end-pause.t<gap)continue;
+  const center=(pause.t+pause.end)/2;let best=-1,distance=Infinity;
+  for(let i=1;i<items.length;i++){const delta=Math.abs((items[i-1].end+items[i].t)/2-center);if(delta<distance){distance=delta;best=i}}
+  if(best>0&&distance<=Math.max(.35,(pause.end-pause.t)*.6))pauseBoundaries.add(best);
+ }
+ for(let i=0;i<items.length;i++){
+  const word=items[i],previous=items[i-1],next=items[i+1];
+  if(line){
+   const paused=word.t-previous.end>=gap||pauseBoundaries.has(i);
+   const strongEnd=/[。！？!?；;]$/.test(line.text),clauseEnd=/[，,：:]$/.test(line.text);
+   // Length is a safety cap, not the primary sentence boundary.
+   if(paused||strongEnd||clauseEnd||(line.text.length>=32&&word.t-line.t>=3))flush();
+  }
+  if(!line)line={t:word.t,end:word.end,text:word.text};
+  else{const space=/[A-Za-z0-9]$/.test(line.text)&&/^[A-Za-z0-9]/.test(word.text)&&word.leadingSpace?' ':'';line.text+=space+word.text;line.end=Math.max(line.end,word.end);}
+  // A leading address such as Boss gets its own cue, without stealing the next word's timestamp.
+  if(word.term&&line.text===word.text&&next&&/^[\u3400-\u9fff]/.test(next.text))flush();
+  else if(/[。！？!?；;]$/.test(word.text))flush();
+ }
+ flush();return lines;
+}
+function timedCharacters(words,pauses=[]){
+ const merged=repairVocabulary(alignWordsToPauses(words,pauses),vocabulary()),chars=[];
+ for(const word of merged){if(chars.length&&word.leadingSpace&&/[A-Za-z0-9]/.test(chars.at(-1).text)&&/^[A-Za-z0-9]/.test(word.text))chars.push({text:' ',t:word.t,end:word.t,wordStart:false});const letters=Array.from(word.text);for(let j=0;j<letters.length;j++){if(/\s/.test(letters[j]))continue;chars.push({text:letters[j],t:word.t+(word.end-word.t)*j/letters.length,end:word.t+(word.end-word.t)*(j+1)/letters.length,wordStart:j===0})}}
+ return chars;
+}
+function naturalBreaks(text){
+ const boundaries=new Set([0,text.length]);
+ const starters=/(?:我突然|明明|平常的我|可是現在|可是现在|可是|但是|然而|不過|不过|真正|我曾經以為|我曾经以为|我曾經|我曾经|我卻|我却|我還想|我还想|還想|还想|我還有|我还有|還有|还有|哪怕|只要|我就會|我就会|謝謝你|谢谢你|你記得|你记得|記得|记得|連那些|连那些|你也願意|你也愿意|你知道|我真的|我甚至|想再多|那我希望|你要|去做|去看看|累的時候|累的时候|難過的時候|难过的时候|因為|因为|也值得|我原本以為|我人本以為|我可以|可以笑著|可以笑着|我好像|如果有一天|希望你想起|而不是|好真討厭|好真讨厌|最後一次|最后一次|我還是|我还是|如果可以|就算|我也不會|我也不会|已經是|已经是|時間快到了|时间快到了|那讓我|那让我|不好意思|可以不要|讓我再多|让我再多|讓我的故事|让我的故事|再見了|再见了)/g;
+ for(const match of text.matchAll(starters))if(match.index>0)boundaries.add(match.index);
+ for(const match of text.matchAll(/[。！？!?；;，,：:]/g))boundaries.add(match.index+match[0].length);
+ for(const match of text.matchAll(/明明/g)){boundaries.add(match.index);boundaries.add(match.index+2)}
+ for(const match of text.matchAll(/Boss/gi)){if(match.index===0||text[match.index-1]!=='的'){boundaries.add(match.index);boundaries.add(match.index+match[0].length)}}
+ return [...boundaries].sort((a,b)=>a-b);
+}
+function naturalTranscript(words,pauses=[],options={}){
+ const chars=timedCharacters(words,pauses);if(!chars.length)return [];
+ const text=chars.map(c=>c.text).join(''),pointIndex=i=>Array.from(text.slice(0,i)).length,cutSet=new Set(naturalBreaks(text).map(pointIndex)),lines=[];const gap=Number(options.gap??$('pauseThreshold').value)||.25;
+ for(let i=1;i<chars.length;i++)if(chars[i].wordStart&&chars[i].t-chars[i-1].end>=gap)cutSet.add(i);
+ const cuts=[...cutSet].sort((a,b)=>a-b);
+ const wordEdges=new Set(chars.map((c,i)=>c.wordStart?i:-1));wordEdges.add(chars.length);
+ // Use dictionary word boundaries when a long clause has no punctuation or discourse cue.
+ if(typeof Intl.Segmenter==='function')for(const part of new Intl.Segmenter('zh',{granularity:'word'}).segment(text))wordEdges.add(pointIndex(part.index));
+ const emit=(a,b)=>{if(b>a){const text=chars.slice(a,b).map(c=>c.text).join('').trim();if(text)lines.push({t:chars[a].t,end:chars[b-1].end,text})}};
+ for(let i=1;i<cuts.length;i++){
+  let start=cuts[i-1],end=cuts[i];
+  while(end-start>26){
+   const candidates=[...wordEdges].filter(x=>x>=start+10&&x<=Math.min(end-4,start+23));
+   const boundary=candidates.sort((a,b)=>Math.abs(a-(start+18))-Math.abs(b-(start+18)))[0]??start+22;
+   emit(start,boundary);start=boundary;
+  }
+  emit(start,end);
+ }
+ return lines;
+}
+function alignReference(words,pauses,reference){
+ const chars=timedCharacters(words,pauses),lines=reference.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ const canonical=c=>c.normalize('NFKC').toLowerCase();
+ const meaningful=c=>/[\p{L}\p{N}\uFFFD]/u.test(c);
+ const source=[];chars.forEach((c,i)=>{if(meaningful(c.text))source.push({key:canonical(c.text),index:i})});
+ const target=[];lines.forEach((line,lineIndex)=>Array.from(line).forEach(c=>{if(meaningful(c))target.push({key:canonical(c),line:lineIndex})}));
+ if(!target.length||!source.length)throw new Error('指定分行台词或识别结果为空。');
+ if(source.length>5000||target.length>5000)throw new Error('指定分行对齐暂支持约 5000 字以内，请分段处理。');
+ // Edit-distance alignment preserves word times; it never distributes a whole clip evenly.
+ const width=source.length+1,rows=target.length+1,trace=new Uint8Array(width*rows);let prior=Uint16Array.from({length:width},(_,i)=>i);
+ for(let j=1;j<rows;j++){
+  const current=new Uint16Array(width);current[0]=j;trace[j*width]=2;
+  for(let i=1;i<width;i++){
+   const diagonal=prior[i-1]+(source[i-1].key===target[j-1].key?0:1),remove=current[i-1]+1,insert=prior[i]+1;
+   const best=Math.min(diagonal,remove,insert);current[i]=best;trace[j*width+i]=best===diagonal?0:best===remove?1:2;
+  }
+  prior=current;
+ }
+ if(prior[source.length]/Math.max(source.length,target.length)>.2)throw new Error('指定台词与识别结果差异较大，请先校对文字；已保留原字幕。简繁体请保持一致。');
+ const mapping=new Map();let i=source.length,j=target.length;
+ while(i||j){const direction=!i?2:!j?1:trace[j*width+i];if(direction===0){mapping.set(j-1,source[i-1].index);i--;j--}else if(direction===1)i--;else j--}
+ const matched=lines.map(()=>[]);target.forEach((t,n)=>{if(mapping.has(n))matched[t.line].push(mapping.get(n))});
+ if(matched.some(x=>!x.length))throw new Error('部分指定分行无法匹配到声音，请检查台词是否完整。');
+ return lines.map((text,n)=>({text,t:chars[matched[n][0]].t,end:chars[matched[n].at(-1)].end}));
+}
+function groupTranscript(words,pauses=[],options={}){
+ const reference=options.reference??$('referenceText').value;
+ if(reference.trim())return alignReference(words,pauses,reference);
+ const mode=options.mode??$('lineMode').value;
+ return mode==='pause'?pauseTranscript(words,pauses,options):naturalTranscript(words,pauses,options);
+}
+$('referenceFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{$('referenceText').value=await file.text();save();setAsrStatus('指定分行已载入；识别音频后，或点击「重新分句」应用。')}catch{toast('分行台词读取失败，请使用 UTF-8 TXT 文件。')}};
+function applyTranscript(transcript){
+ const recognized=groupTranscript(transcript.words,transcript.pauses);
+ if(!recognized.length)throw new Error('没有可应用的台词。');
+ $('editor').value=toSrt(recognized);$('offset').value=0;apply();return recognized;
+}
+$('regroup').onclick=()=>{if(!lastTranscript||asrBusy)return;try{const result=applyTranscript(lastTranscript);setAsrStatus('已重新分句 · '+result.length+' 段 · 无需重新下载模型或识别。')}catch(error){setAsrStatus(error.message,true)}};
+for(const id of ['glossary','pauseThreshold','asrModel','lineMode','referenceText'])$(id).addEventListener('change',save);
+function toSrt(list){const time=t=>{let n=Math.max(0,Math.round(t*1000));return String(Math.floor(n/3600000)).padStart(2,'0')+':'+String(Math.floor(n/60000)%60).padStart(2,'0')+':'+String(Math.floor(n/1000)%60).padStart(2,'0')+','+String(n%1000).padStart(3,'0')};return list.map((c,i)=>(i+1)+'\n'+time(c.t)+' --> '+time(c.end)+'\n'+c.text).join('\n\n')}
+async function runCompatibility(job,emit,task){
+ if(task.cancelled)return;
+ emit({id:job.id,type:'phase',phase:'loading'});
+ if(!compatibilityLibrary){
+  let lastError;
+  for(const base of ['https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/dist/','https://unpkg.com/@huggingface/transformers@3.8.1/dist/']){
+   if(task.cancelled)return;
+   try{
+    const library=await import(base+'transformers.min.js');
+    library.env.allowLocalModels=false;library.env.useBrowserCache=true;
+    library.env.backends.onnx.wasm.numThreads=1;library.env.backends.onnx.wasm.proxy=false;
+    library.env.backends.onnx.wasm.wasmPaths=base;
+    compatibilityLibrary=library;break;
+   }catch(error){lastError=error;}
+  }
+  if(!compatibilityLibrary)throw new Error('无法下载识别组件，请检查能否连接 jsDelivr 或 unpkg。'+(lastError?.message?'（'+lastError.message+'）':''));
+ }
+ if(task.cancelled)return;
+ if(!compatibilityEngine||compatibilityModel!==job.model){
+  if(compatibilityEngine)await compatibilityEngine.dispose();
+  compatibilityEngine=null;compatibilityModel='';
+  compatibilityEngine=await compatibilityLibrary.pipeline('automatic-speech-recognition',job.model,{device:'wasm',dtype:'q8',progress_callback:progress=>{if(!task.cancelled)emit({id:job.id,type:'download',progress})}});
+  const splitWords=compatibilityEngine.tokenizer.combineTokensIntoWords.bind(compatibilityEngine.tokenizer);
+  compatibilityEngine.tokenizer.combineTokensIntoWords=(tokens,_language,...rest)=>splitWords(tokens,'chinese',...rest);
+  compatibilityModel=job.model;
+ }
+ if(task.cancelled)return;
+ task.stop=new compatibilityLibrary.InterruptableStoppingCriteria();
+ const criteria=new compatibilityLibrary.StoppingCriteriaList();criteria.push(task.stop);
+ emit({id:job.id,type:'phase',phase:'transcribing'});
+ const output=await compatibilityEngine(job.samples,{language:'chinese',task:'transcribe',return_timestamps:'word',chunk_length_s:30,stride_length_s:5,max_new_tokens:448,stopping_criteria:criteria});
+ if(!task.cancelled)emit({id:job.id,type:'complete',output});
+}
+$('transcribe').onclick=async()=>{
+ if(asrBusy)return;
+ if(!selectedAudio&&audioURL){
+  const requested=audioURL;$('transcribe').disabled=true;setAsrStatus('正在读取默认音频，用于本机识别…');
+  try{const res=await fetch(requested);if(!res.ok)throw new Error('下载失败');const blob=await res.blob();if(audioURL!==requested)return;selectedAudio=new File([blob],'audio.mp3',{type:blob.type||'audio/mpeg'})}catch{setAsrStatus('默认音频无法下载，请手动上传后识别。',true);return}finally{$('transcribe').disabled=!audioURL&&!selectedAudio}
+ }
+ if(!selectedAudio)return toast('请先选择 MP3 或其他音频。');
+ const id=++asrRun,file=selectedAudio,model=$('asrModel').value;
+ $('audio').pause();setPlaying(false);asrLock(true);$('asrProgress').removeAttribute('value');setAsrStatus('正在本机解码音频…');
+ let phase='decoding',started=Date.now(),fallbackStarted=false;const downloads=new Map();
+ const fail=error=>{if(id!==asrRun)return;destroyAsrWorker();asrLock(false);const raw=error?.message||String(error);const message=/decode|EncodingError/i.test(raw)?'无法解码这段音频，请选择有效的 MP3、WAV 或 M4A 文件。':raw;setAsrStatus('识别未完成：'+message+' 原有台词已保留。可检查网络后重试，或切换轻量模型。',true)};
+ try{
+  const samples=await decodeForRecognition(file,id);if(id!==asrRun||!samples)return;
+  const audioDuration=samples.length/16000,audioPauses=findAudioPauses(samples);
+  const startCompatibility=async()=>{
+   if(fallbackStarted||id!==asrRun)return;
+   fallbackStarted=true;destroyAsrWorker();phase='loading';downloads.clear();
+   $('asrProgress').removeAttribute('value');setAsrStatus('正在切换兼容识别，音频仍在本机处理…');
+   const task={cancelled:false,stop:null};compatibilityTask=task;
+   compatibilityTail=compatibilityTail.catch(()=>{}).then(async()=>{
+    if(task.cancelled||id!==asrRun)return;
+    const input=samples.byteLength?samples:await decodeForRecognition(file,id);
+    if(!input||task.cancelled||id!==asrRun)return;
+    await runCompatibility({id,model,samples:input},handleMessage,task);
+   }).catch(error=>{if(!task.cancelled&&id===asrRun)fail(error)}).finally(()=>{if(compatibilityTask===task)compatibilityTask=null});
+  };
+  const handleMessage=data=>{
+   if(data.id!==id||id!==asrRun)return;
+   if(data.type==='phase'){
+    phase=data.phase;started=Date.now();$('asrProgress').removeAttribute('value');
+    setAsrStatus(phase==='loading'?(fallbackStarted?'兼容识别 · 正在加载模型，首次使用需要下载…':'正在加载识别引擎和模型，首次使用需要下载…'):'模型已就绪，正在本机识别中文…');
+   }else if(data.type==='download'){
+    const p=data.progress;if(p.file&&typeof p.loaded==='number')downloads.set(p.file,{loaded:p.loaded,total:p.total||0});
+    if(p.status==='progress'){
+     const files=[...downloads.values()],loaded=files.reduce((a,f)=>a+f.loaded,0),size=files.reduce((a,f)=>a+f.total,0);
+     $('asrProgress').max=Math.max(1,size);$('asrProgress').value=loaded;
+     setAsrStatus('正在下载模型 · '+(loaded/1048576).toFixed(1)+' MB'+(size?' / '+(size/1048576).toFixed(1)+' MB（已开始的文件）':'')+' · 下载后将自动识别');
+    }else if(p.status==='done'){setAsrStatus('模型文件已就绪，正在初始化…');$('asrProgress').removeAttribute('value');}
+   }else if(data.type==='error')startCompatibility();
+   else if(data.type==='complete'){
+    try{
+     const transcript={words:normalizeTranscript(data.output,audioDuration),pauses:audioPauses};
+     lastTranscript=transcript;const recognized=applyTranscript(transcript);
+     // Apply the full SRT so estimated end times survive edits and reloads.
+     asrLock(false);
+     setAsrStatus('识别完成 · '+recognized.length+' 段台词 · 已应用。可在下方校对，或关闭设置播放。');
+     $('notice').textContent='识别结果已写入编辑框，修改后点击「应用台词」。';toast('中文台词与时间轴已生成。');
+    }catch(error){fail(error)}
+   }
+  };
+  asrTimer=setInterval(()=>{if(id===asrRun&&phase==='transcribing')setAsrStatus('正在本机识别中文 · 已用时 '+fmt((Date.now()-started)/1000)+' · 可取消，结果将自动填入台词。')},1000);
+  if(location.protocol==='file:'){startCompatibility();return;}
+  try{
+   if(!asrWorker){asrWorkerURL=URL.createObjectURL(new Blob([ASR_WORKER_SOURCE],{type:'text/javascript'}));asrWorker=new Worker(asrWorkerURL,{type:'module'});}
+   asrWorker.onerror=event=>{event.preventDefault();startCompatibility()};
+   asrWorker.onmessage=({data})=>{if(!fallbackStarted)handleMessage(data)};
+   asrWorker.postMessage({id,model,samples},[samples.buffer]);
+  }catch(error){startCompatibility();}
+ }catch(error){fail(error)}
+};
+window.addEventListener('beforeunload',destroyAsrWorker);
+
+$('textFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{$('editor').value=await file.text();apply()}catch{toast('字幕读取失败，请尝试 UTF-8 编码文件。')}};
+$('volume').oninput=e=>{$('audio').volume=Number(e.target.value);save()};$('mute').onclick=()=>{$('audio').muted=!$('audio').muted;$('mute').style.opacity=$('audio').muted?'.3':'1';$('mute').setAttribute('aria-label',$('audio').muted?'取消静音':'静音');toast($('audio').muted?'已静音':'已开启声音')};
+function scheduleContrast(){if(!backgroundImage)return;cancelAnimationFrame(contrastFrame);contrastFrame=requestAnimationFrame(adaptBackgroundContrast)}
+function updateBackgroundOverlay(){
+ const strength=Math.max(0,Math.min(85,Number($('overlayStrength').value)||0));
+ $('overlayValue').textContent=strength+'%';
+ $('shade').style.background='#000';$('shade').style.opacity=strength/100;
+ $('shade').style.display=backgroundImage&&strength>0?'block':'none';
+ document.body.classList.toggle('readable-background',Boolean(backgroundImage&&strength>0));
+ return strength/100;
+}
+$('overlayStrength').oninput=()=>{updateBackgroundOverlay();if(backgroundImage)adaptBackgroundContrast();save()};
+function adaptBackgroundContrast(){
+ const overlay=updateBackgroundOverlay();
+ if(!backgroundImage||!contrastContext)return;
+ const w=innerWidth,h=innerHeight,ratio=Math.max(w/backgroundImage.naturalWidth,h/backgroundImage.naturalHeight);
+ const drawW=backgroundImage.naturalWidth*ratio,drawH=backgroundImage.naturalHeight*ratio;
+ contrastCanvas.width=160;contrastCanvas.height=Math.max(1,Math.round(160*h/w));
+ contrastContext.clearRect(0,0,contrastCanvas.width,contrastCanvas.height);
+ // Composite transparency over the selected theme, matching background-size: cover.
+ contrastContext.fillStyle=getComputedStyle($('scene')).backgroundColor;contrastContext.fillRect(0,0,contrastCanvas.width,contrastCanvas.height);
+ contrastContext.drawImage(backgroundImage,(w-drawW)/2/w*160,(h-drawH)/2/h*contrastCanvas.height,drawW/w*160,drawH/h*contrastCanvas.height);
+ const pixels=contrastContext.getImageData(0,0,contrastCanvas.width,contrastCanvas.height).data;
+ const luminance=(x,y)=>{x=Math.max(0,Math.min(contrastCanvas.width-1,Math.round(x/w*contrastCanvas.width)));y=Math.max(0,Math.min(contrastCanvas.height-1,Math.round(y/h*contrastCanvas.height)));const i=(y*contrastCanvas.width+x)*4;const rgb=[pixels[i],pixels[i+1],pixels[i+2]].map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4});return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722};
+ const choose=values=>{const mean=values.reduce((a,b)=>a+b,0)/Math.max(1,values.length);return (mean+.05)/.05>=1.05/(mean+.05)?'dark':'light'};
+ const ring=document.querySelector('.voice-particles').getBoundingClientRect(),ringValues=[];
+ for(let i=0;i<64;i++){const a=i/64*Math.PI*2;ringValues.push(luminance(ring.x+ring.width/2+Math.cos(a)*ring.width*.35,ring.y+ring.height/2+Math.sin(a)*ring.height*.35))}
+ const range=document.createRange();range.selectNodeContents($('lyric'));const rects=[...range.getClientRects()];const lyricValues=[];
+ for(const rect of rects)for(let x=rect.left;x<=rect.right;x+=Math.max(4,rect.width/24))for(let y=rect.top;y<=rect.bottom;y+=Math.max(4,rect.height/5))lyricValues.push(luminance(x,y));
+ if(!lyricValues.length)lyricValues.push(luminance(w/2,h*.6));
+ const lyricTone=overlay>0?'light':choose(lyricValues),ringTone=overlay>0?'light':choose(ringValues),scene=$('scene');
+ scene.style.setProperty('--lyric-color',lyricTone==='dark'?'#141519':'#f7f7f9');scene.style.setProperty('--ring-color',ringTone==='dark'?'#141519':'#f7f7f9');
+ scene.style.setProperty('--fg',lyricTone==='dark'?'#141519':'#f7f7f9');scene.style.setProperty('--muted',lyricTone==='dark'?'#45464d':'#dadbe0');scene.style.setProperty('--line',lyricTone==='dark'?'#00000028':'#ffffff30');scene.style.setProperty('--accent',lyricTone==='dark'?'#25262c':'#eeeef2');
+ scene.style.setProperty('--contrast-shadow',lyricTone==='dark'?'#ffffff45':'#00000065');
+ $('contrastInfo').textContent=(overlay>0?'黑色遮罩 '+Math.round(overlay*100)+'% · 白色前景':'背景已适配')+' · 台词'+(lyricTone==='dark'?'深色':'浅色')+' / 粒子'+(ringTone==='dark'?'深色':'浅色');
+}
+function clearBackground(){
+ if(bgURL)URL.revokeObjectURL(bgURL);bgURL='';backgroundImage=null;cancelAnimationFrame(contrastFrame);
+ $('background').style.backgroundImage='';$('shade').style.display='none';$('bgFile').value='';document.body.classList.remove('custom-background','readable-background');
+ for(const name of ['--lyric-color','--ring-color','--fg','--muted','--line','--accent','--contrast-shadow'])$('scene').style.removeProperty(name);
+ $('contrastInfo').textContent='自定义背景会自动适配台词和粒子的明暗。';
+}
+document.querySelectorAll('.theme').forEach(b=>b.onclick=()=>{theme(b.dataset.theme);scheduleContrast()});
+$('bgFile').onchange=e=>{
+ const file=e.target.files[0];if(!file)return;if(!file.type.startsWith('image/'))return toast('请选择图片文件。');
+ if(bgURL)URL.revokeObjectURL(bgURL);const url=bgURL=URL.createObjectURL(file),img=new Image();
+ img.onload=()=>{if(bgURL!==url)return;backgroundImage=img;$('background').style.backgroundImage='url("'+url+'")';$('shade').style.display='none';document.body.classList.add('custom-background');adaptBackgroundContrast();toast('背景已应用，台词与粒子颜色已自动适配。')};
+ img.onerror=()=>{if(bgURL===url){clearBackground();toast('无法读取这张背景图片，请换一张图片。')}};img.src=url;
+};
+$('clearBg').onclick=clearBackground;
+window.addEventListener('resize',scheduleContrast);
+if(document.fonts?.ready)document.fonts.ready.then(scheduleContrast);
+function preferences(){updateBackgroundOverlay();$('lyric').style.fontSize='clamp(24px, '+Number($('fontSize').value)/13+'vw, '+$('fontSize').value+'px)';document.body.classList.toggle('still',!$('motion').checked);save();wake()}
+['fontSize','ringGain','motion','hideUI'].forEach(id=>$(id).oninput=preferences);
+$('stamp').onclick=()=>{if(stampIndex>=cues.length)return toast('全部台词已标记，可以导出 LRC。');const time=Math.max(0,position-(Number($('offset').value)||0));if(stampIndex&&time<=stamps[stampIndex-1].t)return toast('请继续播放，下一句时间需晚于上一句。');stamps.push({t:time,text:cues[stampIndex].text});stampIndex++;$('notice').textContent='已标记 '+stampIndex+'/'+cues.length+' 句'+(cues[stampIndex]?' · 下一句：'+cues[stampIndex].text:' · 点击导出保存');if(stampIndex===cues.length){cues=[...stamps];$('editor').value=toLrc(cues);active=-2;save();toast('时间轴已完成并应用。')}};
+function toLrc(list){return list.map(c=>{const n=Math.round(c.t*100);return '['+String(Math.floor(n/6000)).padStart(2,'0')+':'+String(Math.floor(n/100)%60).padStart(2,'0')+'.'+String(n%100).padStart(2,'0')+']'+c.text.replace(/\n/g,' ')}).join('\n')}
+$('export').onclick=()=>{const blob=new Blob([toLrc(stamps.length?stamps:cues)],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ether-lyrics.lrc';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);if(stamps.length&&stamps.length<cues.length)toast('已导出已标记的 '+stamps.length+' 句。')};
+$('demo').onclick=()=>{$('editor').value=demo.join('\n');$('interval').value=5;$('offset').value=0;apply()};
+$('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else toast('此浏览器暂不支持全屏，请使用浏览器的全屏功能。')}catch{toast('无法进入全屏，请使用浏览器的全屏功能。')}};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePanel();return}if($('panel').classList.contains('open')){if(e.key==='Tab'){const focusables=[...$('panel').querySelectorAll('button,input,textarea,select')].filter(x=>!x.disabled),first=focusables[0],last=focusables.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}return}if(/INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName))return;if(e.code==='Space'){e.preventDefault();toggle()}if(e.key==='ArrowLeft'){e.preventDefault();move(-1)}if(e.key==='ArrowRight'){e.preventDefault();move(1)}});['mousemove','pointerdown','touchstart'].forEach(ev=>document.addEventListener(ev,wake,{passive:true}));
+let scrubbing=false,immersive=false;
+function setImmersive(hidden){
+ immersive=hidden;document.body.classList.toggle('immersive',hidden);clearTimeout(idleTimer);
+ document.querySelector('footer').inert=hidden;document.querySelector('.transport').inert=hidden;
+ if(hidden){closePanel();document.activeElement?.blur()}else{wake()}
+}
+$('immersiveButton').onclick=()=>setImmersive(true);
+document.addEventListener('pointerdown',e=>{if(!immersive)return;e.preventDefault();e.stopImmediatePropagation();setImmersive(false)},{capture:true});
+document.addEventListener('keydown',e=>{if(immersive){if(e.key==='Escape'||e.key.toLowerCase()==='h'){e.preventDefault();e.stopImmediatePropagation();setImmersive(false)}return}if(e.key.toLowerCase()==='h'&&!/INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName)){e.preventDefault();setImmersive(true)}},{capture:true});
+function finishScrub(){if(!scrubbing)return;seek(Number($('seek').value));scrubbing=false;render();wake()}
+let scrubPointer=null;
+function scrubAt(clientX){const range=$('seek'),rect=range.getBoundingClientRect(),width=Math.max(1,rect.width-16),fraction=Math.min(1,Math.max(0,(clientX-rect.left-8)/width));range.value=String(Number(range.min)+(Number(range.max)-Number(range.min))*fraction);seek(Number(range.value))}
+$('seek').addEventListener('pointerdown',e=>{if($('seek').disabled||e.button>0)return;e.preventDefault();scrubbing=true;scrubPointer=e.pointerId;try{$('seek').setPointerCapture(e.pointerId)}catch{}scrubAt(e.clientX);wake()});
+$('seek').addEventListener('pointermove',e=>{if(!scrubbing||scrubPointer!==e.pointerId)return;e.preventDefault();scrubAt(e.clientX)});
+$('seek').addEventListener('pointerup',finishScrub);$('seek').addEventListener('pointercancel',finishScrub);$('seek').addEventListener('lostpointercapture',finishScrub);$('seek').addEventListener('change',finishScrub);window.addEventListener('blur',finishScrub);document.addEventListener('pointerup',finishScrub);document.addEventListener('pointercancel',finishScrub);
+$('seek').addEventListener('keydown',e=>{const target={ArrowLeft:position-5,ArrowRight:position+5,PageDown:position-10,PageUp:position+10,Home:0,End:total()}[e.key];if(target===undefined)return;e.preventDefault();seek(target);wake()});
+
+$('editor').value=demo.join('\n');try{const s=JSON.parse(localStorage.getItem('ether-v1')||'null');if(s){$('lineMode').value=s.lineMode||'natural';$('referenceText').value=s.referenceText||'';if(['Xenova/whisper-small','Xenova/whisper-base','Xenova/whisper-tiny'].includes(s.asrModel))$('asrModel').value=s.asrModel;if(typeof s.glossary==='string')$('glossary').value=s.glossary;$('pauseThreshold').value=s.pauseThreshold||.25;$('editor').value=s.text||demo.join('\n');$('interval').value=s.interval||5;$('offset').value=s.offset||0;$('fontSize').value=s.font||56;for(const id of ['motion','hideUI'])if(typeof s[id]==='boolean')$(id).checked=s[id];$('volume').value=s.volume??.8;$('ringGain').value=s.ringGain??2.2;$('overlayStrength').value=s.overlayStrength??55;theme(s.theme||'dark')}}catch{}$('audio').volume=Number($('volume').value);cues=parse($('editor').value);$('play').innerHTML=playIcon;preferences();render();requestAnimationFrame(tick);
+
+// Relative paths work under GitHub Pages project subdirectories. Change only these filenames if needed.
+const PLAYER_ASSETS={audio:'assets/audio.mp3',subtitles:'assets/subtitles.srt',background:'assets/background.jpg'};
+let assetRevision={audio:0,subtitles:0,background:0},autoAudioActive=false;
+const assetState={audio:'等待加载',subtitles:'等待加载',background:'等待加载'};
+function showAssetState(){const labels={audio:'音频',subtitles:'台词',background:'背景'};$('assetLoadStatus').textContent=Object.keys(labels).map(k=>labels[k]+'：'+assetState[k]).join('\n')}
+function assetUrl(path){return new URL(path,document.baseURI).href}
+async function loadPlayerAssets(){
+ const revision={...assetRevision};
+ if(PLAYER_ASSETS.audio){
+  autoAudioActive=true;audioURL=assetUrl(PLAYER_ASSETS.audio);$('audio').src=audioURL;$('audio').preload='metadata';$('audio').load();$('trackName').textContent=PLAYER_ASSETS.audio+' · 自动加载';assetState.audio='正在加载';
+ }else assetState.audio='未指定，可手动上传';
+ const tasks=[];
+ if(PLAYER_ASSETS.subtitles)tasks.push((async()=>{
+  try{const res=await fetch(assetUrl(PLAYER_ASSETS.subtitles));if(!res.ok)throw new Error('missing');const text=await res.text();if(assetRevision.subtitles!==revision.subtitles)return;if(!text.trim()||/^\s*<!doctype|^\s*<html/i.test(text))throw new Error('invalid');
+   const loaded=parse(text);if(!loaded.length)throw new Error('invalid');$('editor').value=text;$('offset').value=0;cues=loaded;stampIndex=0;stamps=[];active=-2;save();render();assetState.subtitles='已加载 '+cues.length+' 句';
+  }catch{if(assetRevision.subtitles===revision.subtitles)assetState.subtitles=location.protocol==='file:'?'本地双击无法读取字幕，请用网站网址或手动上传':'未找到，请检查 '+PLAYER_ASSETS.subtitles}
+ })());else assetState.subtitles='未指定，可手动上传';
+ if(PLAYER_ASSETS.background)tasks.push(new Promise(resolve=>{
+  const img=new Image(),url=assetUrl(PLAYER_ASSETS.background);
+  img.onload=()=>{if(assetRevision.background===revision.background){bgURL=url;backgroundImage=img;$('background').style.backgroundImage='url('+JSON.stringify(url)+')';document.body.classList.add('custom-background');adaptBackgroundContrast();assetState.background='已加载'}resolve()};
+  img.onerror=()=>{if(assetRevision.background===revision.background)assetState.background='未找到，可手动上传';resolve()};img.src=url;
+ }));else assetState.background='未指定，可手动上传';
+ showAssetState();await Promise.allSettled(tasks);showAssetState();
+}
+const defaultMetadataHandler=$('audio').onloadedmetadata,defaultErrorHandler=$('audio').onerror;
+$('audio').onloadedmetadata=e=>{defaultMetadataHandler?.(e);if(autoAudioActive){assetState.audio='已加载 · 点击播放开始';showAssetState();$('transcribe').disabled=false}};
+$('audio').onerror=e=>{if(autoAudioActive){setPlaying(false);assetState.audio='无法读取，请检查 '+PLAYER_ASSETS.audio;showAssetState();$('trackName').textContent='默认音频未加载 · 可手动上传'}else defaultErrorHandler?.(e)};
+for(const [id,key] of [['audioFile','audio'],['textFile','subtitles'],['bgFile','background']]){
+ const original=$(id).onchange;$(id).onchange=async e=>{if(!e.target.files[0])return;assetRevision[key]++;if(key==='audio')autoAudioActive=false;assetState[key]='使用手动上传文件';showAssetState();return original?.(e)};
+}
+$('editor').addEventListener('input',()=>{assetRevision.subtitles++});
+const oldClearBackground=$('clearBg').onclick;$('clearBg').onclick=()=>{assetRevision.background++;assetState.background='已移除';showAssetState();oldClearBackground()};
+void loadPlayerAssets();
+
+</script>
+</body>
+</html>
